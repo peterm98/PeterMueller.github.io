@@ -1,0 +1,200 @@
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+		<title>Power BI reports</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tomorrow-night-bright.min.css">
+        <style>
+            code.language-r {
+                font-size: 12px; /* Adjust the font size as needed */
+            }
+            h2 {
+                font-size: 48px; /* Adjust the font size as needed */
+            }
+            /* Reduce top margin for the code section */
+            pre {
+                margin-top: 2px; /* Adjust the value as needed */
+            }
+            /* Adjust the height of the iframe to 100% of the viewport height */
+            iframe {
+                height: 100vh;
+            }
+        </style>
+        <style>
+          #myBtn {
+              display: none;
+              position: fixed;
+              bottom: 20px;
+              left: 50%; /* Center the button horizontally */
+              transform: translateX(-50%); /* Center the button horizontally */
+              z-index: 99;
+              border: none;
+              outline: none;
+              background: transparent; /* Transparent background */
+              color: white;
+              cursor: pointer;
+              padding: 10px; /* Adjust padding as needed */
+              border-radius: 50%; /* Make it a circle */
+              font-size: 18px;
+          }
+      
+          #myBtn::before {
+              content: "\2191"; /* Unicode character for upward arrow */
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              height: 100%; /* Ensure the arrow is vertically centered */
+              font-size: 24px; /* Adjust arrow size as needed */
+          }
+      
+          #myBtn:hover {
+              background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background on hover */
+          }
+      </style>
+    </head>
+	<body class="is-preload">
+    
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header" style="margin-top: 20px;">
+						<a href="index.html" class="logo">Back to Portfolio</a>
+                        <p>
+
+                        </p>
+                        <h2><a href="#">Power BI reports</a></h2>
+					</header>
+
+				<!-- Nav -->
+					<nav id="nav">
+						<ul class="links">
+							<li class="active"><a href="pbi_1prices.html">Crop prices</a></li>
+              <li><a href="pbi_4apps.html">App reviews</a></li>
+							<li><a href="pbi_2drought_monitor.html">Drought Monitor</a></li>
+							<li><a href="pbi_3flood_monitor.html">Flood Monitor</a></li>
+              
+						</ul>
+					</nav> 
+				<!-- Main -->
+					<div id="main">
+						<p> 
+                            A dashboard to visualize main cash crop prices with Yahoo Finance live data.
+                        </p>
+                        <iframe title="Report Section" width="100%" src="https://app.powerbi.com/view?r=eyJrIjoiNDliOWQ0NmYtMWFjYy00MGZhLWE4MzEtM2Q2Zjc4ODkyYzM3IiwidCI6ImRmODY3OWNkLWE4MGUtNDVkOC05OWFjLWM4M2VkN2ZmOTVhMCJ9" frameborder="0" allowFullScreen="true"></iframe>
+						<p> 
+                            Future prices for all commodities except cotton are listed at the Chicago Board of Trade. Cotton prices are listed at the New York Board of Trade.
+							Data has been gathered via scraping the Yahoo Finance website using the following R-code which is connected to the PowerBI report.
+                        </p>
+
+						<pre>
+							<code>library(httr)
+library(jsonlite)
+library(dplyr)
+
+download_and_parse_data <- function(crop) {
+  
+  url <- paste("https://query1.finance.yahoo.com/v8/finance/chart/", crop, "?range=10y&interval=1d", sep = "")
+  
+  response <- GET(url)
+  
+  if (http_error(response)) {
+    warning(paste("Failed to download data for URL:", url, "- Status code:", http_status(response)$status))
+    return(NULL)
+  } else {
+    
+    data <- fromJSON(content(response, "text"))
+    inter_data <- data.frame(data$chart$result$indicators$quote)
+    close_data <- data.frame(data$chart$result$indicators$adjclose)
+    price_data <- data.frame(StockCode = data$chart$result$meta$symbol,
+                             timestamp = unlist(data$chart$result$timestamp),
+                             trading_volume = unlist(inter_data$volume),
+                             price_high = unlist(inter_data$high),
+                             price_low = unlist(inter_data$low),
+                             price = unlist(close_data$adjclose))
+    if (crop == "ZT=F"){
+      price_data$Item = "Cotton"
+      price_data$ItemCode = 328
+    } else if (crop == "ZC=F"){
+      price_data$Item = "Maize (Corn)"
+      price_data$ItemCode = 56
+    }else if (crop == "ZR=F"){
+      price_data$Item = "Rice"
+      price_data$ItemCode = 27
+    }else if (crop == "ZL=F"){
+      price_data$Item = "SoyaBean"
+      price_data$ItemCode = 236
+    }else if (crop == "ZW=F"){
+      price_data$Item = "Wheat"
+      price_data$ItemCode = 15
+    }
+    return(price_data)
+  }
+}
+
+crops <- c("ZT=F", "ZC=F", "ZR=F", "ZL=F", "ZW=F")
+
+price_list <- lapply(crops, download_and_parse_data)
+
+price_data_all <- do.call(rbind, price_list)
+							</code>
+						</pre>
+					
+					</div>
+
+				<!-- Copyright -->
+				<div id="copyright">
+					<ul>
+						<li>&copy; Peter Müller</li>
+						<li>Design: <a href="https://html5up.net">HTML5 UP</a></li>
+						<li>Last updated: 05.01.2024</li> <!-- Add your desired date format here -->
+					</ul>
+				</div>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+            
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+            <script>hljs.highlightAll();</script>
+ 
+            <button onclick="topFunction()" id="myBtn" title="Go to top"></button>
+
+            <script>
+                // Get the button:
+                let mybutton = document.getElementById("myBtn");
+        
+                // When the user scrolls down 20px from the top of the document, show the button
+                window.onscroll = function() { scrollFunction() };
+        
+                function scrollFunction() {
+                    if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                        mybutton.style.display = "block";
+                    } else {
+                        mybutton.style.display = "none";
+                    }
+                }
+        
+                // When the user clicks on the button, scroll to the top of the document
+                function topFunction() {
+                    document.body.scrollTop = 0; // For Safari
+                    document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE, and Opera
+                }
+            </script>
+                  
+        
+          </body>
+</html>

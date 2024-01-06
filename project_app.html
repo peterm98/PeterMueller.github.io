@@ -1,0 +1,256 @@
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+		<title>Analysis of Apple Store Reviews</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tomorrow-night-bright.min.css">
+        <style>
+            code.language-r {
+                font-size: 12px; /* Adjust the font size as needed */
+            }
+        </style>
+        <style>
+            h2 {
+                font-size: 48px; /* Adjust the font size as needed */
+            }
+        </style>
+        <style>
+            /* Reduce top margin for the code section */
+            pre {
+                margin-top: 2px; /* Adjust the value as needed */
+            }
+        </style>
+        <style>
+            #myBtn {
+                display: none;
+                position: fixed;
+                bottom: 20px;
+                left: 50%; /* Center the button horizontally */
+                transform: translateX(-50%); /* Center the button horizontally */
+                z-index: 99;
+                border: none;
+                outline: none;
+                background: transparent; /* Transparent background */
+                color: white;
+                cursor: pointer;
+                padding: 10px; /* Adjust padding as needed */
+                border-radius: 50%; /* Make it a circle */
+                font-size: 18px;
+            }
+        
+            #myBtn::before {
+                content: "\2191"; /* Unicode character for upward arrow */
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100%; /* Ensure the arrow is vertically centered */
+                font-size: 24px; /* Adjust arrow size as needed */
+            }
+        
+            #myBtn:hover {
+                background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background on hover */
+            }
+        </style>
+    
+    </head>
+	<body class="is-preload">
+    
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header" style="margin-top: 20px;">
+						<a href="index.html" class="logo">Back to Portfolio</a>
+                        <p>
+
+                        </p>
+                        <h2><a href="#">Analysis of Apple Store Reviews</a></h2>
+					</header>
+
+				<!-- Nav -->
+					<nav id="nav">
+						<ul class="links">
+							<!-- <li><a href="index.html">This is Massively</a></li> -->
+							<li class="active"><a href="project_app.html">Data gathering & cleaning</a></li>
+							<li><a href="project_app_analysis.html">Analysis</a></li>
+                            <li><a href="project_app_visualizations.html">Visualizations</a></li>
+						</ul>
+						<!-- <ul class="icons">
+							<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+							<li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+							<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+							<li><a href="#" class="icon brands fa-github"><span class="label">GitHub</span></a></li>
+						</ul> -->
+					</nav> 
+				<!-- Main -->
+					<div id="main">
+						
+<p> This project was part of university course. The goal was to statistically
+    analyse App ratings and the sentiment of written reviews using R. Data has been gathered by creating an API connection to the Apple Store. The following function takes 
+the country of reviews (in this case reviews from the US, Great Britain and Australia), the number of pages to retrieve (max 10) and the 
+appleID. The App analyzed in this case the Uber App (ID: 368677368). Also data types will be changed and duplicates removed.
+<pre>
+<code class="language-r">### function to get data as review_appleID_country
+get_review <- function(country, page_num, appleID){
+    all_reviews <- c()
+    for (i in 1:page_num){
+        json_url <- paste0("https://itunes.apple.com/",
+                    country,
+                    '/rss/customerreviews/page=',
+                    i,
+                    '/id=',
+                    appleID,
+                    '/json')
+        rawdata <- GET(json_url)
+        raw.content <- rawToChar(rawdata$content)
+        list <- fromJSON(raw.content)
+        Date <- list$feed$entry$updated$label
+        Author_Name <- list$feed$entry$author$name
+        App_Version <- list$feed$entry$`im:version`$label
+        Rating <- list$feed$entry$`im:rating`$label
+        Title <- list$feed$entry$title$label
+        Review <- list$feed$entry$content$label
+        countryvar <- rep(country, each = 50)
+        page_review <- data.frame(Date, countryvar, Author_Name, App_Version, Rating, Title, Review)
+        all_reviews <- rbind(all_reviews, page_review)
+    }
+    names(all_reviews) <- c('date','countryvar', 'author.name','app.version',
+                            'rating','title','review')
+    all_reviews$date <- as.Date(all_reviews$date)
+    assign(paste("reviews", appleID, country, sep = "_"), all_reviews, envir = .GlobalEnv)
+}
+
+appleID = 368677368  #Uber
+all_reviews <- rbind(get_review(country="us", page_num = 10, appleID = appleID),
+                    get_review(country="gb", page_num = 10, appleID = appleID),
+                    get_review(country="au", page_num = 10, appleID = appleID))
+
+file_name <- sprintf("all_reviews_%d_%s.RData", appleID, format(Sys.time(), "%Y%m%d"))
+save(all_reviews, file = file_name)
+
+# turn rating into a numeric variable
+all_reviews$rating = as.numeric(all_reviews$rating)
+# turn version into a factor variable
+all_reviews$app.version = as.factor(all_reviews$app.version)
+
+# Check for duplicates and remove them
+if (sum(duplicated(all_reviews$author.name)) >= 1) {
+  all_reviews <- all_reviews[!duplicated(all_reviews)]
+} else {cat("No duplicates")}</code>
+                                    </pre>
+
+<p> For further analysis of the written titles and reviews it is necessary to rewrite negative abbreviations. 
+<p>
+<pre>
+    <code>clean.text <- function(text){
+    clean.tx <- gsub("it??TMs", "it's", text)
+    clean.tx <- tolower(clean.tx)
+    clean.tx <- gsub("don't", "do not", clean.tx)
+    clean.tx <- gsub("doesn't", "does not", clean.tx)
+    clean.tx <- gsub("does", "do not", clean.tx)
+    clean.tx <- gsub("can't", "can not", clean.tx)
+    clean.tx <- gsub("cant", "can not", clean.tx)
+    clean.tx <- gsub("you're", "you are", clean.tx)
+    clean.tx <- gsub("youre", "you are", clean.tx)
+    clean.tx <- gsub("shouldn't", "should not", clean.tx)
+    clean.tx <- gsub("wouldn't", "would not", clean.tx)
+    clean.tx <- gsub("couldn't", "could not", clean.tx)
+    clean.tx <- gsub("cannot", "can not", clean.tx)
+    clean.tx <- gsub("won't", "will not", clean.tx)
+    clean.tx <- gsub("haven't", "have not", clean.tx)
+    clean.tx <- gsub("hasn't", "has not", clean.tx)
+    clean.tx <- gsub("hadn't", "had not", clean.tx)
+    clean.tx <- gsub("ain't", "is not", clean.tx)
+    clean.tx <- gsub("didn't", "did not", clean.tx)
+    clean.tx <- gsub("isn't", "is not", clean.tx)
+    clean.tx <- gsub("wasn't", "was not", clean.tx)
+    clean.tx <- gsub("aren't", "are not", clean.tx)
+    clean.tx <- gsub("mustn't", "must not", clean.tx)
+
+    clean.tx <- gsub("@\\w+", "", clean.tx)
+    clean.tx <- gsub("https?://.+", "", clean.tx)
+    clean.tx <- gsub("\\d+\\w*\\d*", "", clean.tx)
+    clean.tx <- gsub("#\\w+", "", clean.tx)
+    clean.tx <- gsub("[[:punct:]]", " ", clean.tx)
+    clean.tx <- gsub("\n", " ", clean.tx)
+    clean.tx <- gsub("^\\s+", "", clean.tx)
+    clean.tx <- gsub("\\s+$", "", clean.tx)
+    clean.tx <- gsub("[ |\t]+", " ", clean.tx)
+    clean.tx <- replace(clean.tx, clean.tx == "", NA)
+    return(clean.tx)
+}
+# apply function
+all_reviews$clean.title <- clean.text(all_reviews$title)
+all_reviews$clean.review <- clean.text(all_reviews$review)
+
+# remove entries with na
+all_reviews <- all_reviews[!(is.na(all_reviews$clean.title) & is.na(all_reviews$clean.review)),]
+
+    </code>
+</pre>
+<p>
+							</section>
+
+					</div>
+
+				<!-- Copyright -->
+				<div id="copyright">
+					<ul>
+						<li>&copy; Peter Müller</li>
+						<li>Design: <a href="https://html5up.net">HTML5 UP</a></li>
+						<li>Last updated: 05.01.2024</li> <!-- Add your desired date format here -->
+					</ul>
+				</div>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+
+            
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+<!-- and it's easy to individually load additional languages -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+
+<script>hljs.highlightAll();</script>
+        
+<button onclick="topFunction()" id="myBtn" title="Go to top"></button>
+
+<script>
+    // Get the button:
+    let mybutton = document.getElementById("myBtn");
+
+    // When the user scrolls down 20px from the top of the document, show the button
+    window.onscroll = function() { scrollFunction() };
+
+    function scrollFunction() {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            mybutton.style.display = "block";
+        } else {
+            mybutton.style.display = "none";
+        }
+    }
+
+    // When the user clicks on the button, scroll to the top of the document
+    function topFunction() {
+        document.body.scrollTop = 0; // For Safari
+        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE, and Opera
+    }
+</script>
+    
+
+</body>
+</html>

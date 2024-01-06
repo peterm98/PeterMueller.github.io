@@ -1,0 +1,124 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Crop prices statistical analysis</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tomorrow-night-bright.min.css">
+    <style>
+        code.language-r {
+            font-size: 12px; /* Adjust the font size as needed */
+        }
+    </style>
+    <style>
+        h2 {
+            font-size: 48px; /* Adjust the font size as needed */
+        }
+    </style>
+    <style>
+      #myBtn {
+          display: none;
+          position: fixed;
+          bottom: 20px;
+          left: 50%; /* Center the button horizontally */
+          transform: translateX(-50%); /* Center the button horizontally */
+          z-index: 99;
+          border: none;
+          outline: none;
+          background: transparent; /* Transparent background */
+          color: white;
+          cursor: pointer;
+          padding: 10px; /* Adjust padding as needed */
+          border-radius: 50%; /* Make it a circle */
+          font-size: 18px;
+      }
+  
+      #myBtn::before {
+          content: "\2191"; /* Unicode character for upward arrow */
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100%; /* Ensure the arrow is vertically centered */
+          font-size: 24px; /* Adjust arrow size as needed */
+      }
+  
+      #myBtn:hover {
+          background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background on hover */
+      }
+  </style>
+</head>
+<body class="is-preload">
+    <div id="wrapper">
+        <header id="header" style="margin-top: 20px;">
+            <a href="index.html" class="logo">Back to Portfolio</a>
+            <p></p>
+            <h2><a href="#">Crop prices statistical analysis</a></h2>
+        </header>
+        <nav id="nav">
+            <ul class="links">
+                <li class="active"><a href="crop_prices_statistics_data_preparation.html">Data Preparation</a></li>
+                <li><a href="crop_prices_statistics_eda.html">EDA</a></li>
+                <li><a href="crop_prices_univariate_models.html">Univariate models</a></li>
+                <li><a href="crop_prices_multivariate_models.html">Multivariate models</a></li>
+                <li><a href="crop_prices_RNN_model.html">Neural Network</a></li> 
+            </ul>
+        </nav> 
+
+
+        <div id="main">
+            <!-- Add an iframe to embed the Jupyter notebook -->
+
+        <!-- <p>
+            In this project..
+        </p> -->
+
+            <iframe src="jpnb_crop_prices_data_preparation.html" width = "100%" height = "2000px" frameborder="0"></iframe>
+
+        </div>
+        <!-- Copyright -->
+				<div id="copyright">
+					<ul>
+						<li>&copy; Peter Müller</li>
+						<li>Design: <a href="https://html5up.net">HTML5 UP</a></li>
+						<li>Last updated: 05.01.2024</li> <!-- Add your desired date format here -->
+					</ul>
+				</div>
+    </div>
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/jquery.scrollex.min.js"></script>
+    <script src="assets/js/jquery.scrolly.min.js"></script>
+    <script src="assets/js/browser.min.js"></script>
+    <script src="assets/js/breakpoints.min.js"></script>
+    <script src="assets/js/util.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+    <script>hljs.highlightAll();</script>
+
+    <button onclick="topFunction()" id="myBtn" title="Go to top"></button>
+
+    <script>
+        // Get the button:
+        let mybutton = document.getElementById("myBtn");
+
+        // When the user scrolls down 20px from the top of the document, show the button
+        window.onscroll = function() { scrollFunction() };
+
+        function scrollFunction() {
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                mybutton.style.display = "block";
+            } else {
+                mybutton.style.display = "none";
+            }
+        }
+
+        // When the user clicks on the button, scroll to the top of the document
+        function topFunction() {
+            document.body.scrollTop = 0; // For Safari
+            document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE, and Opera
+        }
+    </script>
+  </body>
+</html>

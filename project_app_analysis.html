@@ -1,0 +1,300 @@
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+		<title>Analysis of Apple Store Reviews</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tomorrow-night-bright.min.css">
+        <style>
+            code.language-r {
+                font-size: 12px; /* Adjust the font size as needed */
+            }
+        </style>
+        <style>
+            h2 {
+                font-size: 48px; /* Adjust the font size as needed */
+            }
+        </style>
+        <style>
+          #myBtn {
+              display: none;
+              position: fixed;
+              bottom: 20px;
+              left: 50%; /* Center the button horizontally */
+              transform: translateX(-50%); /* Center the button horizontally */
+              z-index: 99;
+              border: none;
+              outline: none;
+              background: transparent; /* Transparent background */
+              color: white;
+              cursor: pointer;
+              padding: 10px; /* Adjust padding as needed */
+              border-radius: 50%; /* Make it a circle */
+              font-size: 18px;
+          }
+      
+          #myBtn::before {
+              content: "\2191"; /* Unicode character for upward arrow */
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              height: 100%; /* Ensure the arrow is vertically centered */
+              font-size: 24px; /* Adjust arrow size as needed */
+          }
+      
+          #myBtn:hover {
+              background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background on hover */
+          }
+      </style>
+      
+
+      
+    </head>
+	<body class="is-preload">
+    
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header" style="margin-top: 20px;">
+						<a href="index.html" class="logo">Back to Portfolio</a>
+                        <p>
+
+                        </p>
+                        <h2><a href="#">Analysis of Apple Store Reviews</a></h2>
+					</header>
+
+            <!-- Nav -->
+                <nav id="nav">
+                    <ul class="links">
+                        <!-- <li><a href="index.html">This is Massively</a></li> -->
+                        <li><a href="project_app.html">Data gathering & cleaning</a></li>
+                        <li class="active"><a href="project_app_analysis.html">Analysis</a></li>
+                        <li><a href="project_app_visualizations.html">Visualizations</a></li>
+                    </ul>
+                    <!-- <ul class="icons">
+                        <li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+                        <li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+                        <li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+                        <li><a href="#" class="icon brands fa-github"><span class="label">GitHub</span></a></li>
+                    </ul> -->
+                </nav> 
+
+				<!-- Main -->
+					<div id="main">
+
+						<!-- Post -->
+							<!-- <section class="post">
+								
+                                <p> Here comes the analysis part
+                                <p>
+
+							</section> -->
+<p> A central part of the sentiment analysis is counting the occurences of 
+positive and negative connotated words using pre-defined word lists. However, 
+this method is legitimate only when accounting for reverse meaning of words. For example, "This is not good" must be counted as negative even though it contains a positive word. 
+The following function takes into account this and 
+
+<pre>
+<code class="language-r"># function to count negative and positive words
+count_words <- function(text, neg_list, pos_list){
+#for titles
+if(text == "title"){
+    # counting numbers of positive and negative words
+    for(i in 1:length(all.reviews$clean.title)){
+    words <- unlist(str_split(all.reviews$clean.title[i], pattern = " "),     
+                    use.names = FALSE)
+    all.reviews$count_neg_title[i] <<- sum(words %in% neg_list)
+    all.reviews$count_pos_title[i] <<- sum(words %in% pos_list)
+    #correct for ["not" + positive word] in the title
+    if("not" %in% words){
+        #get position of all "not"s in the text
+        not_pos <<- which(words %in% "not")    
+        for(j in 1:length(not_pos)){
+        if(words[not_pos[j] + 1] %in% words_pos){    
+            # if word after "not" is in the positive list, then
+            # reducing positive value by 1; increasing negative value by 1
+            all.reviews$count_pos_title[i] <<- all.reviews$count_pos_title[i]-1
+            all.reviews$count_neg_title[i] <<- all.reviews$count_neg_title[i]+1
+            }
+        }
+    }
+    # calculating the sentiment value
+    all.reviews$sentiment.title.cw[i] <<- all.reviews$count_pos_title[i] - 
+        all.reviews$count_neg_title[i]
+    }
+    #for reviews 
+} else if(text == "review"){
+    for(i in 1:length(all.reviews$clean.review)){
+    words <- unlist(str_split(all.reviews$clean.review[i], pattern = " "),
+                    use.names = FALSE)
+    all.reviews$count_neg_review[i] <<- sum(words %in% neg_list)
+    all.reviews$count_pos_review[i] <<- sum(words %in% pos_list)
+    if("not" %in% words){
+        not_pos <- which(words %in% "not")
+        for(j in 1:length(not_pos)){
+        if(words[not_pos[j] + 1] %in% words_pos){
+            all.reviews$count_pos_review[i] <<- all.reviews$count_pos_review[i]-1
+            all.reviews$count_neg_review[i] <<- all.reviews$count_neg_review[i]+1
+            }
+        }
+    }
+    all.reviews$sentiment.review.cw[i] <<- all.reviews$count_pos_review[i] - 
+        all.reviews$count_neg_review[i]
+    }
+}
+}
+# apply the counting function for titles and reviews
+count_words(text = "title", neg_list = words_neg, 
+        pos_list = words_pos)
+count_words(text = "review", neg_list = words_neg, 
+        pos_list = words_pos)   </code>
+</pre>
+<p>
+There are other existing methods used in sentiment analysis which can be called by using th get_sentiment()
+function from the syuzhet R library. The outcomes of these methods are added to the data frame with the following function.
+</p>
+<pre>
+<code class="language-r">all_methods <- c("cw","bing", "syuzhet", "nrc")
+# function to calculate average sentiment scores all observation (titles and reviews) by different methods 
+sentiment_observation <- function(text, methods){
+for(m in 1:length(methods)){
+if(text == "title"){
+  for(i in 1:length(all.reviews$review)){
+    all.reviews$newcol[i] <<- get_sentiment(all.reviews$clean.title[i], 
+                                            method = methods[m], 
+                                            language = "english")
+  }
+}else if(text == "review"){
+  for(i in 1:length(all.reviews$review)){
+    all.reviews$newcol[i] <<- get_sentiment(all.reviews$clean.review[i], 
+                                            method = methods[m], 
+                                            language = "english")
+  }
+}
+names(all.reviews)[names(all.reviews) == "newcol"] <<- paste("sentiment",
+                                                             text,
+                                                             method = methods[m],
+                                                             sep = ".")
+}
+}
+
+#apply the sentiment function for titles and reviews
+sentiment_observation(text = "review", methods = all_methods[2:4])
+sentiment_observation(text = "title", methods = all_methods[2:4])
+</code>
+</pre>
+
+<p>
+To dig deeper in the anaysis an emotion analysis can be conducted.
+The approach is to compare the words in title and review and then with a 
+pre-defined word-emotion-library and  count the occurences of emotions.
+</p>
+
+<pre>
+    <code># get the emotion keywords from the NRC dictionary
+nrc_data <- lexicon::nrc_emotions %>%  
+  gather("sentiment", "flag", anger:trust, -term) %>% 
+  filter(flag==1)
+
+# display the used emotions
+all_emotions <- cat(unique(nrc_data$sentiment), sep = ", ") 
+# order: negative 4 emotions first, then positive 4 emotions
+all_emotions <- c("anger", "disgust", "fear", "sadness", "anticipation", "joy", 
+                  "surprise", "trust")
+
+# create a function to get occurrences of words with specific emotions (% of amount of words)
+fun_emotions <- function(text, emotions){
+  for(e in 1:length(emotions)){
+    # storing the vocabularies of a emotion into "emotion_list"
+    emotion_list <- nrc_data %>% filter(sentiment == emotions[e]) %>% 
+      dplyr::select(term) %>% unlist()
+    if(text == "title"){
+      for(i in 1:length(all_reviews$clean.title)){
+        # storing the words of the text string 
+        words <- unlist(str_split(all_reviews$clean.title[i], pattern = " "),
+                        use.names = FALSE)
+        # calculate percentage of words with the specified emotion
+        all_reviews$emotion_percent[i] <<- sum(words %in% emotion_list)/length(words) 
+      }
+      #rename column
+      names(all_reviews)[names(all_reviews) == 'emotion_percent'] <<- 
+        paste("title_emotion_percent_", emotions[e], sep = "")
+    }
+    if(text == "review"){
+      #same for reviews
+      for(i in 1:length(all_reviews$clean.review)){
+        words <- unlist(str_split(all_reviews$clean.review[i], pattern = " "),
+                        use.names = FALSE)
+        all_reviews$emotion_percent[i] <<- sum(words %in% emotion_list)/length(words) 
+      }
+      names(all_reviews)[names(all_reviews) == 'emotion_percent'] <<- 
+        paste("review_emotion_percent_", emotions[e], sep = "")
+    }
+  }
+} 
+# apply function
+fun_emotions(text = "review", emotions = all_emotions)
+fun_emotions(text = "title", emotions = all_emotions)
+    </code>
+</pre>
+					</div>
+
+				<!-- Copyright -->
+					<div id="copyright">
+						<ul><li>&copy; Untitled</li><li>Design: <a href="https://html5up.net">HTML5 UP</a></li></ul>
+					</div>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+            
+
+
+            
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+<!-- and it's easy to individually load additional languages -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+
+<script>hljs.highlightAll();</script>
+        
+
+<button onclick="topFunction()" id="myBtn" title="Go to top"></button>
+
+<script>
+    // Get the button:
+    let mybutton = document.getElementById("myBtn");
+
+    // When the user scrolls down 20px from the top of the document, show the button
+    window.onscroll = function() { scrollFunction() };
+
+    function scrollFunction() {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            mybutton.style.display = "block";
+        } else {
+            mybutton.style.display = "none";
+        }
+    }
+
+    // When the user clicks on the button, scroll to the top of the document
+    function topFunction() {
+        document.body.scrollTop = 0; // For Safari
+        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE, and Opera
+    }
+</script>
+
+</body>
+</html>

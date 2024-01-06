@@ -1,0 +1,308 @@
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+		<title>Power BI reports</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tomorrow-night-bright.min.css">
+        <style>
+            code.language-r {
+                font-size: 12px; /* Adjust the font size as needed */
+            }
+            h2 {
+                font-size: 48px; /* Adjust the font size as needed */
+            }
+            /* Reduce top margin for the code section */
+            pre {
+                margin-top: 2px; /* Adjust the value as needed */
+            }
+            /* Adjust the height of the iframe to 100% of the viewport height */
+            iframe {
+                height: 100vh;
+            }
+        </style>
+		<style>
+            #myBtn {
+                display: none;
+                position: fixed;
+                bottom: 20px;
+                left: 50%; /* Center the button horizontally */
+                transform: translateX(-50%); /* Center the button horizontally */
+                z-index: 99;
+                border: none;
+                outline: none;
+                background: transparent; /* Transparent background */
+                color: white;
+                cursor: pointer;
+                padding: 10px; /* Adjust padding as needed */
+                border-radius: 50%; /* Make it a circle */
+                font-size: 18px;
+            }
+        
+            #myBtn::before {
+                content: "\2191"; /* Unicode character for upward arrow */
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100%; /* Ensure the arrow is vertically centered */
+                font-size: 24px; /* Adjust arrow size as needed */
+            }
+        
+            #myBtn:hover {
+                background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background on hover */
+            }
+        </style>
+    </head>
+	<body class="is-preload">
+    
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header" style="margin-top: 20px;">
+						<a href="index.html" class="logo">Back to Portfolio</a>
+                        <p>
+
+                        </p>
+                        <h2><a href="#">Power BI reports</a></h2>
+					</header>
+
+				<!-- Nav -->
+					<nav id="nav">
+						<ul class="links">
+							<li><a href="pbi_1prices.html">Crop prices</a></li>
+							<li><a href="pbi_4apps.html">App reviews</a></li>
+							<li class="active"><a href="pbi_2drought_monitor.html">Drought Monitor</a></li>
+							<li><a href="pbi_3flood_monitor.html">Flood Monitor</a></li>
+							
+						</ul>
+					</nav> 
+				<!-- Main -->
+					<div id="main">
+						<p> 
+                            California is a major producer for agricultural products. 
+							However California is prone to droughts and extreme weather events. 
+							This report should helps monitoring the state of soils in California.
+                        </p>
+						<!-- prices dashboard -->
+                        <!-- <iframe title="Report Section" width="100%" src="https://app.powerbi.com/view?r=eyJrIjoiNDliOWQ0NmYtMWFjYy00MGZhLWE4MzEtM2Q2Zjc4ODkyYzM3IiwidCI6ImRmODY3OWNkLWE4MGUtNDVkOC05OWFjLWM4M2VkN2ZmOTVhMCJ9" frameborder="0" allowFullScreen="true"></iframe> -->
+						
+						<!-- prices & production dashboard -->
+						<iframe title="soil_pbi" width="100%" src="https://app.powerbi.com/view?r=eyJrIjoiMTcwOTBmMzMtMzU4ZS00ZjMxLTk4ZGQtNzQxYjM0YmUwM2RjIiwidCI6ImRmODY3OWNkLWE4MGUtNDVkOC05OWFjLWM4M2VkN2ZmOTVhMCJ9" frameborder="0" allowFullScreen="true"></iframe>
+						
+						<p> 
+							The United States Department of Agriculture (USDA) regularly updates the datasets for overall soil moisture data. 
+							The PDSI data is collected through the National Oceanic and Atmospheric Administration (NOAA) API service, with weekly updates. 
+							Weather information, frequently refreshed, is sourced from weatherapi.com. 
+							The follwong R-code to gather NOAA and weather data is connected to the report.
+                        </p>
+						<pre>
+							<code>#NOAA data
+library(httr)
+library(jsonlite)
+
+# Function to download and parse JSON data for a given year
+download_and_parse_data <- function(year) {
+  url <- paste0("https://www.ncei.noaa.gov/access/monitoring/weekly-palmers/pdi-", year, ".json")
+  response <- GET(url)
+  
+  if (http_error(response)) {
+    warning(paste("Failed to download data for year", year, " - Status code:", http_status(response)$status))
+    return(NULL)
+  } else {
+    json_data <- content(response, "text", encoding = "UTF-8")
+    parsed_data <- fromJSON(json_data)
+    return(as.data.frame(parsed_data))
+  }
+}
+
+# List of divisions to iterate over
+divisions <- c("0401", "0402", "0403", "0404", "0405", "0406", "0407")
+
+# Initialize an empty list to store parsed JSON data
+all_data <- list()
+
+# Iterate over divisions and download/parse data
+for (year in divisions) {
+  data <- download_and_parse_data(year)
+  if (!is.null(data)) {
+    all_data[[year]] <- data
+  }
+}
+
+# Combine all the data into a single dataframe
+combined_noaa_data <- do.call(rbind, all_data)
+							</code>
+						</pre>
+
+					<section id="weatherapi">
+						<pre>
+							<code>#weather data
+library(httr)
+library(jsonlite)
+library(dplyr)
+library(hash)
+
+# Function to download and parse JSON data for a given year
+download_and_parse_data <- function(dim, locations) {
+	key <- "---"
+	
+	if (dim == "current") {
+	urls <- paste0("http://api.weatherapi.com/v1/", dim, ".json?key=", key, "&q=", locations, "&aqi=no")
+	} else {
+	urls <- paste0("http://api.weatherapi.com/v1/", dim, ".json?key=", key, "&q=", locations, "&days=10&aqi=no")
+	}
+	
+	responses <- lapply(urls, function(url) {
+	response <- GET(url)
+	
+	if (http_error(response)) {
+		warning(paste("Failed to download data for URL:", url, "- Status code:", http_status(response)$status))
+		return(NULL)
+	} else {
+		json_data <- content(response, "text", encoding = "UTF-8")
+		parsed_data <- fromJSON(json_data)
+		return(as.data.frame(parsed_data))
+	}
+	})
+	
+	return(responses)
+}
+
+locations <- hash()
+# assign zip codes to region 
+# 1 North Coast Drainage
+locations[["0401"]]<-c("95573", "95531", "95501", "96097", "95428", "95401")
+# 2 Sacramento Drainage
+locations[["0402"]]<-c("95926", "96101", "95602", "94203")
+# 3 Northeast Interior Basin
+locations[["0403"]]<-c("96130", "96120", "93517")
+# 4 Central Coast Drainage
+locations[["0404"]]<-c("93954", "93101", "95060")
+# 5 San Joaquin Drainage
+locations[["0405"]]<-c("93650", "93230", "93220")
+# 6
+locations[["0406"]]<-c("92101","92401", "90001")
+# 7
+locations[["0407"]]<-c("92262", "92309")
+
+locations_dat <- as.data.frame(do.call(rbind, lapply(names(locations), function(x) data.frame(code = rep(x, length(locations[[x]])), value = locations[[x]]))))
+locations_dat <- tibble::rownames_to_column(locations_dat, var = "location_id")
+
+# Initialize an empty list to store parsed JSON data
+all_data_current <- list()
+all_data_forecast <- list()
+
+# Iterate over divisions and download/parse data
+for (l in keys(locations)) {
+	data_current <- download_and_parse_data(dim = "current", locations = locations[[l]])
+	if (!all(sapply(data_current, is.null))) {
+	# Add the region_ID to each data frame in the list
+	data_current <- lapply(data_current, function(df) {
+		df$region_ID <- l
+		return(df)
+	})
+	# Combine all the data frames for the current dimension
+	all_data_current[[l]] <- do.call(rbind, data_current)
+	}
+}
+
+# Combine all the current data 
+all_data_current <- do.call(rbind, all_data_current)
+all_data_current$location_id <- rep(1:length(unlist(values(locations))))
+
+# Iterate over divisions and download/parse data for forecast
+for (l in keys(locations)) {
+	data_forecast <- download_and_parse_data(dim = "forecast", locations = locations[[l]])
+	if (!all(sapply(data_forecast, is.null))) {
+	# Add the region_ID to each data frame in the list
+	data_forecast <- lapply(data_forecast, function(df) {
+		df$region_ID <- l
+		return(df)
+	})
+	# Combine all the data frames for the forecast dimension
+	all_data_forecast[[l]] <- dplyr::bind_rows(data_forecast)
+	}
+}
+
+# Initialize an empty list to store the daily forecast data
+forecast_daily <- list()
+
+# Iterate over locations and download/parse daily forecast data
+# Iterate over locations and download/parse daily forecast data
+for (l in keys(locations)) {
+	if (l %in% names(all_data_forecast)) {
+	# Extract relevant forecast data
+	daily_forecast_data <- all_data_forecast[[l]]$forecast.forecastday.day[, -c(19)]
+	
+	# Create a new column 'region_ID' and assign the corresponding value
+	daily_forecast_data$region_ID <- l
+	# Add the date column
+	daily_forecast_data$date <- all_data_forecast[[l]]$forecast.forecastday.date
+	
+	# Append to the list
+	forecast_daily[[l]] <- daily_forecast_data
+	}
+}
+
+all_data_forecast_daily <- do.call(rbind, forecast_daily)
+all_data_forecast_daily$location_id <- rep(1:length(unlist(values(locations))), each = 10)
+							</code>
+						</pre>
+					</section>
+					</div>
+
+				<!-- Copyright -->
+				<div id="copyright">
+					<ul>
+						<li>&copy; Peter Müller</li>
+						<li>Design: <a href="https://html5up.net">HTML5 UP</a></li>
+						<li>Last updated: 05.01.2024</li> <!-- Add your desired date format here -->
+					</ul>
+				</div>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+            
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+            <script>hljs.highlightAll();</script>
+        
+			<button onclick="topFunction()" id="myBtn" title="Go to top"></button>
+
+			<script>
+				// Get the button:
+				let mybutton = document.getElementById("myBtn");
+		
+				// When the user scrolls down 20px from the top of the document, show the button
+				window.onscroll = function() { scrollFunction() };
+		
+				function scrollFunction() {
+					if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+						mybutton.style.display = "block";
+					} else {
+						mybutton.style.display = "none";
+					}
+				}
+		
+				// When the user clicks on the button, scroll to the top of the document
+				function topFunction() {
+					document.body.scrollTop = 0; // For Safari
+					document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE, and Opera
+				}
+			</script>
+		
+		</body>
+</html>
