@@ -107,34 +107,78 @@
 
 							</section> -->
 <p> 
-The first graphic displays a rolling average of the NRC value both for the title and the review text of the entry.
-The NRC Emotion Lexicon is a list of English words and their associations with eight basic emotions and two sentiments. 
-The value ranges from -1 to 1 while a positive value is associated with a positive sentiment. 
-In the graphic clearly, reviews with ratings 4 and 5 show a more positive sentiment in both the title and the actual review text.
+
   <div class="image-container">
     <img src="images/timeseriesplot.jpg" width="max" alt="" class="center-fit"/> 
- </div>
-<p>The second graphic displays the occurences of words with different emotions. Not surprising, "positive" emotions dominate when there is a higher rating, vice versa.</p>
-<div class="image-container">
+    <hr class="line"/>
     <img src="images/barplots_emotions2.jpg" width="max" alt="" class="center-fit"/> 
-</div>
-
-<p>The third graphic displays the calcultated sentiment values based on reviews from different countries.</p>
-<div class="image-container">
+    <hr class="line"/>
     <img src="images/barplot_countries.jpg" width="max" alt="" class="center-fit"/> 
 </div>
 
 
+<!-- <pre>
+<code class="language-r"># function to count negative and positive words
+count_words <- function(text, neg_list, pos_list){
+#for titles
+if(text == "title"){
+    # counting numbers of positive and negative words
+    for(i in 1:length(all.reviews$clean.title)){
+    words <- unlist(str_split(all.reviews$clean.title[i], pattern = " "),     
+                    use.names = FALSE)
+    all.reviews$count_neg_title[i] <<- sum(words %in% neg_list)
+    all.reviews$count_pos_title[i] <<- sum(words %in% pos_list)
+    #correct for ["not" + positive word] in the title
+    if("not" %in% words){
+        #get position of all "not"s in the text
+        not_pos <<- which(words %in% "not")    
+        for(j in 1:length(not_pos)){
+        if(words[not_pos[j] + 1] %in% words_pos){    
+            # if word after "not" is in the positive list, then
+            # reducing positive value by 1; increasing negative value by 1
+            all.reviews$count_pos_title[i] <<- all.reviews$count_pos_title[i]-1
+            all.reviews$count_neg_title[i] <<- all.reviews$count_neg_title[i]+1
+            }
+        }
+    }
+    # calculating the sentiment value
+    all.reviews$sentiment.title.cw[i] <<- all.reviews$count_pos_title[i] - 
+        all.reviews$count_neg_title[i]
+    }
+    #for reviews 
+} else if(text == "review"){
+    for(i in 1:length(all.reviews$clean.review)){
+    words <- unlist(str_split(all.reviews$clean.review[i], pattern = " "),
+                    use.names = FALSE)
+    all.reviews$count_neg_review[i] <<- sum(words %in% neg_list)
+    all.reviews$count_pos_review[i] <<- sum(words %in% pos_list)
+    if("not" %in% words){
+        not_pos <- which(words %in% "not")
+        for(j in 1:length(not_pos)){
+        if(words[not_pos[j] + 1] %in% words_pos){
+            all.reviews$count_pos_review[i] <<- all.reviews$count_pos_review[i]-1
+            all.reviews$count_neg_review[i] <<- all.reviews$count_neg_review[i]+1
+            }
+        }
+    }
+    all.reviews$sentiment.review.cw[i] <<- all.reviews$count_pos_review[i] - 
+        all.reviews$count_neg_review[i]
+    }
+}
+}
+# apply the counting function for titles and reviews
+count_words(text = "title", neg_list = words_neg, 
+        pos_list = words_pos)
+count_words(text = "review", neg_list = words_neg, 
+        pos_list = words_pos)   </code>
+</pre> -->
+
 					</div>
 
 				<!-- Copyright -->
-				<div id="copyright">
-					<ul>
-						<li>&copy; Peter Müller</li>
-						<li>Design: <a href="https://html5up.net">HTML5 UP</a></li>
-						<li>Last updated: 05.01.2024</li> <!-- Add your desired date format here -->
-					</ul>
-				</div>
+					<div id="copyright">
+						<ul><li>&copy; Untitled</li><li>Design: <a href="https://html5up.net">HTML5 UP</a></li></ul>
+					</div>
 
 			</div>
 
@@ -157,30 +201,28 @@ In the graphic clearly, reviews with ratings 4 and 5 show a more positive sentim
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
 
 <script>hljs.highlightAll();</script>
-        
 <button onclick="topFunction()" id="myBtn" title="Go to top"></button>
 
-<script>
-    // Get the button:
-    let mybutton = document.getElementById("myBtn");
+    <script>
+        // Get the button:
+        let mybutton = document.getElementById("myBtn");
 
-    // When the user scrolls down 20px from the top of the document, show the button
-    window.onscroll = function() { scrollFunction() };
+        // When the user scrolls down 20px from the top of the document, show the button
+        window.onscroll = function() { scrollFunction() };
 
-    function scrollFunction() {
-        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-            mybutton.style.display = "block";
-        } else {
-            mybutton.style.display = "none";
+        function scrollFunction() {
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                mybutton.style.display = "block";
+            } else {
+                mybutton.style.display = "none";
+            }
         }
-    }
 
-    // When the user clicks on the button, scroll to the top of the document
-    function topFunction() {
-        document.body.scrollTop = 0; // For Safari
-        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE, and Opera
-    }
-</script>
-
-</body>
+        // When the user clicks on the button, scroll to the top of the document
+        function topFunction() {
+            document.body.scrollTop = 0; // For Safari
+            document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE, and Opera
+        }
+    </script>
+        </body>
 </html>

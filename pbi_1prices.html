@@ -86,8 +86,8 @@
 						<p> 
                             A dashboard to visualize main cash crop prices with Yahoo Finance live data.
                         </p>
-                        <iframe title="Report Section" width="100%" src="https://app.powerbi.com/view?r=eyJrIjoiNDliOWQ0NmYtMWFjYy00MGZhLWE4MzEtM2Q2Zjc4ODkyYzM3IiwidCI6ImRmODY3OWNkLWE4MGUtNDVkOC05OWFjLWM4M2VkN2ZmOTVhMCJ9" frameborder="0" allowFullScreen="true"></iframe>
-						<p> 
+                        <iframe title="Report Section" width="100%" src="https://app.powerbi.com/view?r=eyJrIjoiZjk1NGU2M2YtY2QwMC00ZTUzLWEyZWEtNjhjNzA1MTU1MDY2IiwidCI6ImRmODY3OWNkLWE4MGUtNDVkOC05OWFjLWM4M2VkN2ZmOTVhMCJ9" frameborder="0" allowFullScreen="true"></iframe>
+                        <p> 
                             Future prices for all commodities except cotton are listed at the Chicago Board of Trade. Cotton prices are listed at the New York Board of Trade.
 							Data has been gathered via scraping the Yahoo Finance website using the following R-code which is connected to the PowerBI report.
                         </p>
@@ -148,13 +148,13 @@ price_data_all <- do.call(rbind, price_list)
 					</div>
 
 				<!-- Copyright -->
-				<div id="copyright">
-					<ul>
-						<li>&copy; Peter Müller</li>
-						<li>Design: <a href="https://html5up.net">HTML5 UP</a></li>
-						<li>Last updated: 05.01.2024</li> <!-- Add your desired date format here -->
-					</ul>
-				</div>
+					<div id="copyright">
+						<ul>
+							<li>&copy; Peter Müller</li>
+							<li>Design: <a href="https://html5up.net">HTML5 UP</a></li>
+							<li>Last updated: 16.12.2023</li> <!-- Add your desired date format here -->
+						</ul>
+					</div>
 
 			</div>
 
@@ -170,31 +170,30 @@ price_data_all <- do.call(rbind, price_list)
             <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
             <script>hljs.highlightAll();</script>
- 
+
             <button onclick="topFunction()" id="myBtn" title="Go to top"></button>
 
-            <script>
-                // Get the button:
-                let mybutton = document.getElementById("myBtn");
-        
-                // When the user scrolls down 20px from the top of the document, show the button
-                window.onscroll = function() { scrollFunction() };
-        
-                function scrollFunction() {
-                    if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-                        mybutton.style.display = "block";
-                    } else {
-                        mybutton.style.display = "none";
-                    }
-                }
-        
-                // When the user clicks on the button, scroll to the top of the document
-                function topFunction() {
-                    document.body.scrollTop = 0; // For Safari
-                    document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE, and Opera
-                }
-            </script>
-                  
-        
-          </body>
+    <script>
+        // Get the button:
+        let mybutton = document.getElementById("myBtn");
+
+        // When the user scrolls down 20px from the top of the document, show the button
+        window.onscroll = function() { scrollFunction() };
+
+        function scrollFunction() {
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                mybutton.style.display = "block";
+            } else {
+                mybutton.style.display = "none";
+            }
+        }
+
+        // When the user clicks on the button, scroll to the top of the document
+        function topFunction() {
+            document.body.scrollTop = 0; // For Safari
+            document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE, and Opera
+        }
+    </script>
+    
+        </body>
 </html>

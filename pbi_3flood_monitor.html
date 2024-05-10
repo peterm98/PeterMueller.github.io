@@ -26,36 +26,36 @@
             }
         </style>
 		<style>
-            #myBtn {
-                display: none;
-                position: fixed;
-                bottom: 20px;
-                left: 50%; /* Center the button horizontally */
-                transform: translateX(-50%); /* Center the button horizontally */
-                z-index: 99;
-                border: none;
-                outline: none;
-                background: transparent; /* Transparent background */
-                color: white;
-                cursor: pointer;
-                padding: 10px; /* Adjust padding as needed */
-                border-radius: 50%; /* Make it a circle */
-                font-size: 18px;
-            }
-        
-            #myBtn::before {
-                content: "\2191"; /* Unicode character for upward arrow */
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                height: 100%; /* Ensure the arrow is vertically centered */
-                font-size: 24px; /* Adjust arrow size as needed */
-            }
-        
-            #myBtn:hover {
-                background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background on hover */
-            }
-        </style>
+			#myBtn {
+				display: none;
+				position: fixed;
+				bottom: 20px;
+				left: 50%; /* Center the button horizontally */
+				transform: translateX(-50%); /* Center the button horizontally */
+				z-index: 99;
+				border: none;
+				outline: none;
+				background: transparent; /* Transparent background */
+				color: white;
+				cursor: pointer;
+				padding: 10px; /* Adjust padding as needed */
+				border-radius: 50%; /* Make it a circle */
+				font-size: 18px;
+			}
+		
+			#myBtn::before {
+				content: "\2191"; /* Unicode character for upward arrow */
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				height: 100%; /* Ensure the arrow is vertically centered */
+				font-size: 24px; /* Adjust arrow size as needed */
+			}
+		
+			#myBtn:hover {
+				background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background on hover */
+			}
+		</style>
     </head>
 	<body class="is-preload">
     
@@ -90,36 +90,7 @@
 
 						<!-- flood-->
 						<iframe title="uk_flood" width="100%" src="https://app.powerbi.com/view?r=eyJrIjoiYTcxMzc1NzMtOGY2NS00OGExLTk5NTUtYmQ1MWZiNGQxNzNmIiwidCI6ImRmODY3OWNkLWE4MGUtNDVkOC05OWFjLWM4M2VkN2ZmOTVhMCJ9" frameborder="0" allowFullScreen="true"></iframe>
-						<p> 
-							Weather information is gathered from weatherapi.com (see <a href="pbi_2drought_monitor.html#weatherapi">Drought monitor</a> project). 
-							The following R-code gets the flood data provided by gov.uk and is implemented in the Power BI report.
-						</p>
-
-						<pre>
-							<code>library(httr)
-library(jsonlite)
-
-url_floods <- "https://environment.data.gov.uk/flood-monitoring/id/floods"
-response_fl <- GET(url_floods)
-json_data_fl <- content(response_fl, "text", encoding = "UTF-8")
-parsed_data_fl <- fromJSON(json_data_fl)
-
-flood_data <- data.frame(eaAreaName = parsed_data_fl$items$eaAreaName,
-							county = parsed_data_fl$items$floodArea$county,
-							floodAreaID = parsed_data_fl$items$floodAreaID,
-							isTidal = parsed_data_fl$items$isTidal,
-							message = parsed_data_fl$items$message,
-							severity = parsed_data_fl$items$severity,
-							severityLevel = parsed_data_fl$items$severityLevel,
-							timeMessageChanged = parsed_data_fl$items$timeMessageChanged,
-							timeRaised = parsed_data_fl$items$timeRaised,
-							timeSeverityChanged = parsed_data_fl$items$timeSeverityChanged)
-
-
-url_forecast <- "https://api.ffc-environment-agency.fgs.metoffice.gov.uk/api/public/v1/statements/thumbnails_with_days"
-forecast_data <- data.frame(img_link = url_forecast, date = Sys.Date())
-							</code>
-						</pre>
+						
 					</div>
 
 				<!-- Copyright -->
@@ -127,7 +98,7 @@ forecast_data <- data.frame(img_link = url_forecast, date = Sys.Date())
 					<ul>
 						<li>&copy; Peter Müller</li>
 						<li>Design: <a href="https://html5up.net">HTML5 UP</a></li>
-						<li>Last updated: 05.01.2024</li> <!-- Add your desired date format here -->
+						<li>Last updated: 16.12.2023</li> <!-- Add your desired date format here -->
 					</ul>
 				</div>
 
@@ -145,32 +116,28 @@ forecast_data <- data.frame(img_link = url_forecast, date = Sys.Date())
             <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
             <script>hljs.highlightAll();</script>
-        
 			<button onclick="topFunction()" id="myBtn" title="Go to top"></button>
 
-			<script>
-				// Get the button:
-				let mybutton = document.getElementById("myBtn");
-		
-				// When the user scrolls down 20px from the top of the document, show the button
-				window.onscroll = function() { scrollFunction() };
-		
-				function scrollFunction() {
-					if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-						mybutton.style.display = "block";
-					} else {
-						mybutton.style.display = "none";
-					}
-				}
-		
-				// When the user clicks on the button, scroll to the top of the document
-				function topFunction() {
-					document.body.scrollTop = 0; // For Safari
-					document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE, and Opera
-				}
-			</script>	
+    <script>
+        // Get the button:
+        let mybutton = document.getElementById("myBtn");
 
-		
-		
-		</body>
+        // When the user scrolls down 20px from the top of the document, show the button
+        window.onscroll = function() { scrollFunction() };
+
+        function scrollFunction() {
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                mybutton.style.display = "block";
+            } else {
+                mybutton.style.display = "none";
+            }
+        }
+
+        // When the user clicks on the button, scroll to the top of the document
+        function topFunction() {
+            document.body.scrollTop = 0; // For Safari
+            document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE, and Opera
+        }
+    </script>
+        </body>
 </html>

@@ -26,36 +26,36 @@
             }
         </style>
 		<style>
-            #myBtn {
-                display: none;
-                position: fixed;
-                bottom: 20px;
-                left: 50%; /* Center the button horizontally */
-                transform: translateX(-50%); /* Center the button horizontally */
-                z-index: 99;
-                border: none;
-                outline: none;
-                background: transparent; /* Transparent background */
-                color: white;
-                cursor: pointer;
-                padding: 10px; /* Adjust padding as needed */
-                border-radius: 50%; /* Make it a circle */
-                font-size: 18px;
-            }
-        
-            #myBtn::before {
-                content: "\2191"; /* Unicode character for upward arrow */
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                height: 100%; /* Ensure the arrow is vertically centered */
-                font-size: 24px; /* Adjust arrow size as needed */
-            }
-        
-            #myBtn:hover {
-                background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background on hover */
-            }
-        </style>
+			#myBtn {
+				display: none;
+				position: fixed;
+				bottom: 20px;
+				left: 50%; /* Center the button horizontally */
+				transform: translateX(-50%); /* Center the button horizontally */
+				z-index: 99;
+				border: none;
+				outline: none;
+				background: transparent; /* Transparent background */
+				color: white;
+				cursor: pointer;
+				padding: 10px; /* Adjust padding as needed */
+				border-radius: 50%; /* Make it a circle */
+				font-size: 18px;
+			}
+		
+			#myBtn::before {
+				content: "\2191"; /* Unicode character for upward arrow */
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				height: 100%; /* Ensure the arrow is vertically centered */
+				font-size: 24px; /* Adjust arrow size as needed */
+			}
+		
+			#myBtn:hover {
+				background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background on hover */
+			}
+		</style>
     </head>
 	<body class="is-preload">
     
@@ -139,7 +139,6 @@ combined_noaa_data <- do.call(rbind, all_data)
 							</code>
 						</pre>
 
-					<section id="weatherapi">
 						<pre>
 							<code>#weather data
 library(httr)
@@ -253,7 +252,6 @@ all_data_forecast_daily <- do.call(rbind, forecast_daily)
 all_data_forecast_daily$location_id <- rep(1:length(unlist(values(locations))), each = 10)
 							</code>
 						</pre>
-					</section>
 					</div>
 
 				<!-- Copyright -->
@@ -261,7 +259,7 @@ all_data_forecast_daily$location_id <- rep(1:length(unlist(values(locations))), 
 					<ul>
 						<li>&copy; Peter Müller</li>
 						<li>Design: <a href="https://html5up.net">HTML5 UP</a></li>
-						<li>Last updated: 05.01.2024</li> <!-- Add your desired date format here -->
+						<li>Last updated: 16.12.2023</li> <!-- Add your desired date format here -->
 					</ul>
 				</div>
 
@@ -279,30 +277,28 @@ all_data_forecast_daily$location_id <- rep(1:length(unlist(values(locations))), 
             <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
             <script>hljs.highlightAll();</script>
-        
 			<button onclick="topFunction()" id="myBtn" title="Go to top"></button>
 
-			<script>
-				// Get the button:
-				let mybutton = document.getElementById("myBtn");
-		
-				// When the user scrolls down 20px from the top of the document, show the button
-				window.onscroll = function() { scrollFunction() };
-		
-				function scrollFunction() {
-					if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-						mybutton.style.display = "block";
-					} else {
-						mybutton.style.display = "none";
-					}
-				}
-		
-				// When the user clicks on the button, scroll to the top of the document
-				function topFunction() {
-					document.body.scrollTop = 0; // For Safari
-					document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE, and Opera
-				}
-			</script>
-		
-		</body>
+    <script>
+        // Get the button:
+        let mybutton = document.getElementById("myBtn");
+
+        // When the user scrolls down 20px from the top of the document, show the button
+        window.onscroll = function() { scrollFunction() };
+
+        function scrollFunction() {
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                mybutton.style.display = "block";
+            } else {
+                mybutton.style.display = "none";
+            }
+        }
+
+        // When the user clicks on the button, scroll to the top of the document
+        function topFunction() {
+            document.body.scrollTop = 0; // For Safari
+            document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE, and Opera
+        }
+    </script>
+        </body>
 </html>
