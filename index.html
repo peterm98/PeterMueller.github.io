@@ -59,8 +59,8 @@
 						</ul>
 					</div>
 					<header id="header">
-						<h1 style="margin-bottom: 0px;">Peter Müller</h1>
-						<h1 style="margin-bottom: -50px;">Data Science Portfolio</h1>
+						<h1 style="margin-bottom: 0px;">PM</h1>
+						<h1 style="margin-bottom: -50px;">...........</h1>
 						<!-- <a class="logo" style="margin-bottom: 0px;">Data Science Portfolio</a> -->
 					</header>
 					
@@ -193,6 +193,24 @@
 							<div class="center-icons">
 								<!-- <img src="images/powerbiicon.png" alt="Power BI Icon" /> -->
 								<img src="images/mysqlicon2.png" alt="" />
+								<img src="images/powerbiicon.png" alt="" />
+							</div>
+						</article>
+
+
+						<article>
+							<header>
+								<h2><a href="supermarket_azure_DB.html">Azure SQL: Supermarket Data</a></h2>
+							</header>
+							<div class="image-container">
+								<a href="supermarket_azure_DB.html" class="image fit">
+									<img src="images/supermarket.jpg" alt="" />
+									
+								</a>
+							</div>
+							<div class="center-icons">
+								<!-- <img src="images/powerbiicon.png" alt="Power BI Icon" /> -->
+								<img src="images/azuresqlicon.jpg" alt="" />
 								<img src="images/powerbiicon.png" alt="" />
 							</div>
 						</article>
@@ -359,13 +377,18 @@
 				<!-- Copyright -->
 				<div id="copyright">
 					<ul>
-						<li>&copy; Peter Müller</li>
-						<li>Design: <a href="https://html5up.net">HTML5 UP</a></li>
-						<li>Last updated: 16.12.2023</li> <!-- Add your desired date format here -->
+						<li>&copy; Peter Müller</li><li>Design: <a href="https://html5up.net">HTML5 UP</a></li>
+						<li id="last-modified"></li>
 					</ul>
 				</div>
-
 			</div>
+		
+			<script>
+				// Get the last modified date of the document
+				var lastModified = document.lastModified;
+				// Insert the last modified date into the HTML
+				document.getElementById('last-modified').textContent = "Last Modified: " + lastModified;
+			</script>
 
 		<!-- Scripts -->
 			<script src="assets/js/jquery.min.js"></script>

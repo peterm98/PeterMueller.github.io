@@ -176,11 +176,20 @@ count_words(text = "review", neg_list = words_neg,
 					</div>
 
 				<!-- Copyright -->
-					<div id="copyright">
-						<ul><li>&copy; Untitled</li><li>Design: <a href="https://html5up.net">HTML5 UP</a></li></ul>
-					</div>
-
-			</div>
+                <div id="copyright">
+                    <ul>
+                        <li>&copy; Peter Müller</li><li>Design: <a href="https://html5up.net">HTML5 UP</a></li>
+                        <li id="last-modified"></li>
+                    </ul>
+                </div>
+            </div>
+        
+            <script>
+                // Get the last modified date of the document
+                var lastModified = document.lastModified;
+                // Insert the last modified date into the HTML
+                document.getElementById('last-modified').textContent = "Last Modified: " + lastModified;
+            </script>
 
 		<!-- Scripts -->
 			<script src="assets/js/jquery.min.js"></script>
